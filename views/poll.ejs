@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>Voting App</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script
+			  src="https://code.jquery.com/jquery-3.2.1.min.js"
+			  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+			  crossorigin="anonymous"></script>
+			  <script type="text/javascript" src="/controllers/pollJquery.js"></script>
+			  <link rel="stylesheet" href="/assets/styles.css">
+    </head>
+    <body>
+        <div class='container'>
+            <%- include('partials/navAuth',{username:embedData.username, loggedIn:embedData.loggedIn})%>
+            <div class='jumbotron'>
+              <!--modal telling user they voted on this poll already if they had-->
+              <% if(embedData.hadVoted){ %>
+                <div id="myModal" class="ownCreatedModal">
+                  <div class="ownCreatedModal-content">
+                    <span class="close">&times;</span>
+                    <p>You already voted on this poll</p>
+                  </div>
+                </div>
+              <% } %>
+              
+              <div class='content'>
+                  <div class='row'>
+                    <div class='col-sm-4'>
+                      <% var holdPostURL = '/polls/'+ embedData.pollIDURL%>
+                      
+                      <form method='POST' action='<%holdPostURL%>' id='userVoted'>
+                        <p class='pollQuestion'><%=embedData.question%></p>
+                        <div class='form-group'>
+                          <select class='form-control' name='userChoice' id='selectBox'>
+                            <% embedData.options.forEach(function(item){ %>
+                            <option value='<%=item[0]%>'><%=item[0]%></option>
+                          <% }) %>
+                            <option value='userCreatedUnique1776' id='userCreatedChoice'>Submit my own answer</option>
+                          </select>
+                        </div>
+                        <div class='ownOpinionDiv'>
+                          Vote with my own opinion:
+                          <span><input type='text' name='userOwnOpinion' id='userOwnOpinion'></span>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary" id='submitBtn'>Submit</button>
+                      </form>
+                    </div>
+                    <div class='col-sm-8 text-center'>
+                      <!--for the chart-->
+                      <%- include('makeChart.ejs', {information:embedData.options}) %>
+                    </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+        <% include partials/footer.ejs %>
+    </body>
+</html>

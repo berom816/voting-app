@@ -1,0 +1,27 @@
+<html>
+    <head>
+        <title>Voting App</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/assets/styles.css">
+    </head>
+    <body>
+        <div id="wrap">
+            <div class='container'>
+                <%- include('partials/navAuth',{username:embedData.username, loggedIn:embedData.loggedIn})%>       
+            
+                <div class='jumbotron'>
+                    <form method='post' action='/newpoll'>
+                        <h2>Make a new poll</h2>
+                        <h3>Title</h3>
+                        <input type='text' name='title' style = 'width:310px;'required/>
+                        <h3>Options (separate by line)</h3>
+                        <textarea name='options' rows="5" cols="50" required></textarea>
+                        <br>
+                        <button class='btn btn-primary newPollSubmitBtn' type='submit'>Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <% include partials/footer.ejs %>
+    </body>
+</html>

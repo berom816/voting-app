@@ -1,0 +1,8 @@
+<% if(typeof(polls)!=='undefined'){ %>
+    <% for(var i = 0; i<polls.length; i++){ %>
+        <li class='list-group-item list_Item'>
+            <% var attachID = '/polls/'+polls[i].id%>
+            <a href='<%=attachID%>'><%=polls[i].pollQuestion%></a>
+        </li>
+    <% } %>
+<% } %>

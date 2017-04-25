@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+        // Create the data table.
+        var holdInfo = <%-JSON.stringify(information)%>
+        //function to help see if there has been no votes yet
+        function allZero(element){
+          // return element.amount===0;
+          return element[1]===0;
+        }
+        //if there is no votes yet, display a no vote chart
+        if(holdInfo.every(allZero)){
+          var data = google.visualization.arrayToDataTable([
+            ['Options', 'Amount'],
+            ['',{v:1, f:'Cast a vote!'}]
+          ]);
+          var options = {
+            height:400,
+            chartArea:{
+              top:13,
+              width:'100%',
+              height:'70%'
+            },
+            legend:{
+                position:'none'
+            },
+            backgroundColor:'rgb(238,238,238)',
+            pieHole: 0.5,
+            colors: ['transparent'],
+            pieSliceBorderColor: 'black',
+            pieSliceText: 'value',
+            pieSliceTextStyle: {
+              color: 'black',
+              fontSize:20
+            },
+            tooltip: {
+              trigger: 'none'
+            }
+          }
+        }
+        //shows the votes
+        else{
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Options');
+            data.addColumn('number', 'Amount');
+            data.addRows(holdInfo);
+            
+            // Set chart options
+            var options = {
+              height:400,
+              backgroundColor:'rgb(238,238,238)',
+              chartArea:{
+                top:13,
+                width:'100%',
+                height:'70%'
+              },
+              legend:{
+                position:'bottom',
+                textStyle:{ 
+                  fontSize:16
+                }
+              },
+              sliceVisibilityThreshold: 0, 
+              pieHole:0.5,
+              pieSliceTextStyle:{
+                color: 'black',
+                fontSize:18
+              }
+            }
+        }
+        
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+
+  <body>
+    <!--Div that will hold the pie chart-->
+    <div id="chart_div"></div>
+  </body>
+</html>

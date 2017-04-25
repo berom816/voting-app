@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <title>Voting App</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <link rel="stylesheet" href="/assets/styles.css">
+    </head>
+    <body>
+      <div id="wrap">
+        <div class='container'>
+          <%- include("partials/navAuth.ejs", {loggedIn:embedData.loggedIn, username:embedData.username}) %>
+          
+          <div class='content text-center jumbotron'>
+              <h1>Poll Collection</h1>
+              <p>Below are polls created by other users</p>
+              <% if(embedData.loggedIn){ %>
+                <p>Select a poll to see the results and vote</p>
+              <% }else{ %>
+                <p>Select a poll to see the results and vote, or sign-in to make a new poll.</p>
+              <% } %>
+              <ul class='list-group'>
+                <%- include("partials/displayPolls.ejs",{polls:embedData.poll}) %>
+              </ul>
+          </div>
+        </div>
+      </div>
+      <% include partials/footer.ejs %>
+    </body>
+</html>
