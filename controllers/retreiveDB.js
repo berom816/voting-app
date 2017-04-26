@@ -48,10 +48,12 @@ module.exports.getUserPolls = function(req,res,next){
 module.exports.saveCreatedPoll = function(req,res,next){
     var data = req.body;
     var tempHoldAnswers = data.options.split('\r\n');
+    
     //filter out the empty lines
     tempHoldAnswers = tempHoldAnswers.filter(function(answer){
         return answer!=='';
     });
+    
     var holdAnswers = [];
     //take only unique choices, disregard duplicate ones
     tempHoldAnswers.forEach(function(answer){
