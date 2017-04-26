@@ -1,9 +1,4 @@
 $(document).ready(function(){
-    // console.log('at jquery');
-    // $('#userVoted').submit(function(event){
-    //     console.log(JSON.stringify(event));
-    //     alert(JSON.stringify(event));
-    // })
     
     // When the user clicks on <span> (x), close the modal
     $('.close').click(function() {
@@ -17,9 +12,7 @@ $(document).ready(function(){
         }
     })
     
-    // $('#userCreatedChoice').focus(function(event){
-    //     console.log(event)
-    // })
+    //make the div containing input for user own opinion appear if selected "submit own opinion"
     $('#selectBox').change(function(){
         var currentOption = $('#selectBox option:selected');
         if(currentOption[0].id==='userCreatedChoice'){

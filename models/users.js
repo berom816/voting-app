@@ -1,12 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-//childen schema used in userPolls
-// var Polls = new Schema({ 
-//     pollQuestion:String, 
-//     pollAnswer:[{choice:String, amount:Number, id:Number}]
-// });
-
 //User schema
 var User = new Schema({
 	twitter: {

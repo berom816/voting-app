@@ -17,16 +17,11 @@ module.exports = function(app, passport){
     }
     
     app.route('/')
-        .get(
-            access.getAllPoll, 
-            function(req,res){
-                // var embedData = {
-                //     loggedIn:false,
-                //     poll:res.locals.holdResult
-                // }
+        .get(access.getAllPoll, function(req,res){
                 var embedData = {
-                    poll:res.locals.holdResult,
+                    poll:res.locals.holdResult
                 }
+                //check if viewing as logged in user
                 if(req.user===undefined){
                     embedData.loggedIn = false;
                 }else{
@@ -37,16 +32,6 @@ module.exports = function(app, passport){
                 res.render('index',{embedData});
             }
         );
-    
-    // app.route('/polls')
-    //     .get(isLoggedIn, access.getAllPoll, function(req,res){
-    //         var embedData = {
-    //             loggedIn:true,
-    //             poll:res.locals.holdResult, 
-    //             username:req.user.twitter.username
-    //         }
-    //         res.render('auth_index',{embedData});
-    //     });
         
     app.route('/mypolls')
         .get(isLoggedIn,access.getUserPolls, function(req,res){
@@ -55,7 +40,6 @@ module.exports = function(app, passport){
                 poll:res.locals.holdPolls, 
                 username:req.user.twitter.username
             }
-            // console.log('embedData.poll', embedData.poll);
             res.render('user_polls.ejs',{embedData});
         });
         
@@ -65,7 +49,7 @@ module.exports = function(app, passport){
                 loggedIn:true,
                 username:req.user.twitter.username
             }
-           res.render('new_polls',{embedData}); 
+            res.render('new_polls',{embedData}); 
         })
         .post(isLoggedIn, urlencodedParser, access.saveCreatedPoll, function(req,res){
             var pollIDString = (res.locals.pollID).toString();
@@ -86,20 +70,18 @@ module.exports = function(app, passport){
                 var pollChoiceAndVotes = dataResult.pollAnswer.map(function(element){
                     return [element.choice, element.amount]
                 })
-                // console.log(pollChoiceAndVotes);
                 var embedData = {
                     question:dataResult.pollQuestion,
                     options:pollChoiceAndVotes,
                     pollIDURL:req.params.id,
                     hadVoted:false
                 }
-                // console.log('embedData', embedData);
-                //check if viewing page as a logged in user 
+                //check if viewing as logged in user
                 if(req.user===undefined){
                     embedData.loggedIn = false;
                 }else{
                     embedData.loggedIn = true;
-                    embedData.username = req.user.twitter.username
+                    embedData.username = req.user.twitter.username;
                 }
                 // embedData.loggedIn = (req.user===undefined)?false:true;
                 
@@ -110,12 +92,16 @@ module.exports = function(app, passport){
         })
         .post(urlencodedParser, function(req,res){
             var userChoice;
+            /* userCreatedUnique1776 is name of unique choice from submitted form, if matches this unqiue string, 
+            then it means user chose to submit their own created opinion
+            userchoice should hold the created opinion*/
             if(req.body.userChoice==='userCreatedUnique1776'){
                 userChoice = req.body.userOwnOpinion;
             }else{
                 userChoice = req.body.userChoice;
             }
             new Promise((resolve, reject)=>{
+                //req.headers['x-forwarded-for'] is user's ip address
                 access.voteOnPoll(req.params.id, userChoice, req.headers['x-forwarded-for'], function(err,result){
                     if(err){
                         reject(err);
@@ -125,23 +111,22 @@ module.exports = function(app, passport){
                 })
             }).then(function(dataReturned){
                 if(dataReturned.hadVoted===true){
-                    var pollChoiceAndVotes = dataReturned.updatedDB.pollAnswer.map(function(element){
+                    var pollChoiceAndVotes = dataReturned.updatedPoll.pollAnswer.map(function(element){
                         return [element.choice, element.amount]
                     })
                     var embedData = {
-                        question:dataReturned.updatedDB.pollQuestion,
+                        question:dataReturned.updatedPoll.pollQuestion,
                         options:pollChoiceAndVotes,
                         pollIDURL:req.params.id,
                     }
+                    //check if viewing as logged in user
                     if(req.user===undefined){
                         embedData.loggedIn = false;
                     }else{
                         embedData.loggedIn = true;
-                        embedData.username = req.user.twitter.username
+                        embedData.username = req.user.twitter.username;
                     }
                     embedData.hadVoted = dataReturned.hadVoted;
-                    // res.json({status:true})
-                    // console.log('embedData.options',embedData.options);
                     res.render('poll', {embedData});
                 }else{
                     var nextURL = '/polls/'+req.params.id;
@@ -162,15 +147,6 @@ module.exports = function(app, passport){
         .get(passport.authenticate('twitter'));
         
     app.route('/auth/twitter/callback')
-        // .get(passport.authenticate('twitter', {
-        //     // successRedirect : '/polls',
-        //     // successReturnToOrRedirect:'/mypolls',
-        //     failureRedirect : '/',
-        //     failureFlash : true
-        // }), function(req,res){
-        //     // res.redirect(req.body.ref_path)
-        //     console.log(req);
-        // });
         .get(passport.authenticate('twitter', {
             successRedirect:'/', 
             failureRedirect:'/'

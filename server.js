@@ -7,11 +7,14 @@ var session = require("express-session");
 // require("dotenv").load();
 require("./config/passport")(passport);
 
+//connect to database
 mongoose.connect(process.env.MONGO_URI);
 mongoose.Promise = global.Promise;
 
+//initialize epxress
 var app = express();
 
+//use ejs as view engine
 app.set('view engine', 'ejs');
 
 app.use(session({
@@ -20,10 +23,10 @@ app.use(session({
     saveUninitialized: true
 }));
 
+//use passport
 app.use(passport.initialize());
 app.use(passport.session());
 
-// app.use('/controllers', express.static(process.cwd() + '/controllers'));
 app.use('/controllers', express.static(__dirname+'/controllers'));
 app.use('/assets', express.static(__dirname+'/assets'));
 
